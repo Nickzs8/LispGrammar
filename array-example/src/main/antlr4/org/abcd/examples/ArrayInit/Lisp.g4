@@ -1,6 +1,8 @@
 grammar Lisp;
 
 // ===== Regras Sintáticas (Parser) =====
+start    : sExpr EOF ;   // único ponto que exige consumir a entrada inteira
+
 sExpr    : atom | list ;
 
 list     : PAR_ABRE elements PAR_FECHA
@@ -21,13 +23,13 @@ atom     : NUMBER
 PAR_ABRE  : '(' ;
 PAR_FECHA : ')' ;
 
-BOOLEAN   : 'T' | 'NIL' | '#t' | '#f' ;   // deve vir ANTES de SYMBOL
+BOOLEAN   : 'T' | 'NIL' | '#t' | '#f' ;   // antes de SYMBOL
 
 STRING    : '"' ~["]* '"' ;
 
 NUMBER    : ('+' | '-')? DIGITS ('.' DIGITS)? ;
 
-SYMBOL    : INITIAL_CHAR SYMBOL_CHAR* ;   // vem DEPOIS de BOOLEAN
+SYMBOL    : INITIAL_CHAR SYMBOL_CHAR* ;   // depois de BOOLEAN
 
 fragment DIGITS        : DIGIT+ ;
 fragment DIGIT          : [0-9] ;

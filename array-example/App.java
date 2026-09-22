@@ -7,29 +7,34 @@ import org.antlr.v4.gui.TreeViewer;
 import javax.swing.*;
 import java.util.Arrays;
 
+/**
+ * Analisador Léxico e Sintático para subconjunto de Lisp.
+ */
 public class App {
 
     public static void main(String[] args) {
-        TreeUI tree = new TreeUI();
+        System.out.println("=== Testes Léxicos ===");
+        testarLexico("(+ 1 2.5 \"abc\" T NIL #t foo-bar)");
 
-        System.out.println("Testes Léxicos");
-        testarLexico("(\"hello\")");
-
-        System.out.println("\n Testes Sintáticos (casos válidos)");
+        System.out.println("\n=== Testes Sintáticos (casos válidos) ===");
         testarSintaxeValida("(+ 1 (* 2 3) \"texto\" T)");
         testarSintaxeValida("(NIL)");
         testarSintaxeValida("42");
         testarSintaxeValida("\"apenas uma string\"");
 
-        System.out.println("\nTestes Sintáticos (casos inválidos)");
+        System.out.println("\n=== Testes Sintáticos (casos inválidos) ===");
         testarSintaxeInvalida("(+ 1 2");           // parêntese não fechado
         testarSintaxeInvalida("(1 2))");            // parêntese sobrando
-        testarSintaxeInvalida("(+ 1 @2)");          // caractere/token inválido
+        testarSintaxeInvalida("(+ 1 @2)");           // símbolo/token inválido
 
-        System.out.println("\n Visualização da Árvore");
-        tree.mostrarArvore("(\"Hello World!\")");
+        System.out.println("\n=== Visualização da Árvore ===");
+        mostrarArvore("(+ 1 (* 2 3) \"texto\" T)");
     }
 
+    /**
+     * Roda apenas o lexer sobre a entrada e imprime cada token reconhecido
+     * com seu nome simbólico (ex: PAR_ABRE, NUMBER, SYMBOL...).
+     */
     private static void testarLexico(String entrada) {
         System.out.println("Entrada: " + entrada);
         CharStream input = CharStreams.fromString(entrada);
@@ -41,6 +46,10 @@ public class App {
         }
     }
 
+    /**
+     * Roda o parser completo (léxico + sintático) e espera que a entrada
+     * seja aceita sem erros.
+     */
     private static void testarSintaxeValida(String entrada) {
         ParseTree tree = parsear(entrada, false);
         if (tree != null) {
@@ -49,47 +58,39 @@ public class App {
         }
     }
 
+    /**
+     * Roda o parser esperando que a entrada seja rejeitada;
+     * imprime os erros de sintaxe capturados.
+     */
     private static void testarSintaxeInvalida(String entrada) {
         System.out.println("Entrada (deve falhar): " + entrada);
         parsear(entrada, true);
     }
 
+    /**
+     * Constrói lexer + parser para a entrada dada.
+     * Se esperaErro=true, apenas reporta os erros sem lançar exceção.
+     */
     private static ParseTree parsear(String entrada, boolean esperaErro) {
-        final int[] erros = {0};
-
         CharStream input = CharStreams.fromString(entrada);
         LispLexer lexer = new LispLexer(input);
-
-        // erros léxicos
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(new BaseErrorListener() {
-            @Override
-            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
-                                    int line, int charPositionInLine,
-                                    String msg, RecognitionException e) {
-                System.out.println("  ERRO LÉXICO (linha " + line + ", coluna " + charPositionInLine + "): " + msg);
-                erros[0]++;
-            }
-        });
-
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         LispParser parser = new LispParser(tokens);
 
-        // erros sintáticos
+        // Listener customizado para capturar erros em vez de só imprimir no console padrão
         parser.removeErrorListeners();
         parser.addErrorListener(new BaseErrorListener() {
             @Override
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                                     int line, int charPositionInLine,
                                     String msg, RecognitionException e) {
-                System.out.println("  ERRO SINTÁTICO (linha " + line + ", coluna " + charPositionInLine + "): " + msg);
-                erros[0]++;
+                System.out.println("  ERRO (linha " + line + ", coluna " + charPositionInLine + "): " + msg);
             }
         });
 
-        ParseTree tree = parser.start();
+        ParseTree tree = parser.sExpr();
 
-        if (erros[0] > 0) {
+        if (parser.getNumberOfSyntaxErrors() > 0) {
             if (!esperaErro) {
                 System.out.println("FALHOU (erro inesperado) -> " + entrada);
             }
@@ -102,4 +103,24 @@ public class App {
         }
     }
 
+    /**
+     * Abre uma janela gráfica mostrando a árvore sintática da entrada.
+     */
+    private static void mostrarArvore(String entrada) {
+        CharStream input = CharStreams.fromString(entrada);
+        LispLexer lexer = new LispLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        LispParser parser = new LispParser(tokens);
+
+        ParseTree tree = parser.sExpr();
+
+        JFrame frame = new JFrame("Árvore Sintática - " + entrada);
+        JPanel panel = new JPanel();
+        TreeViewer viewer = new TreeViewer(Arrays.asList(parser.getRuleNames()), tree);
+        viewer.setScale(1.5);
+        panel.add(viewer);
+        frame.add(panel);
+        frame.pack();
+        frame.setVisible(true);
+    }
 }
