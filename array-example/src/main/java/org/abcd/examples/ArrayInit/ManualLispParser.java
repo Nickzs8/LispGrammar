@@ -16,6 +16,7 @@ public class ManualLispParser {
         this.currentIndex = 0;
     }
 
+    // start    : sExpr EOF ;
     public void parse() {
         sExpr();
 
@@ -27,6 +28,7 @@ public class ManualLispParser {
         System.out.println("Sintaxe válida com sucesso!");
     }
 
+    // sExpr    : atom | list ;
     private void sExpr() {
         MyToken current = peek();
         if (current == null) {
@@ -43,6 +45,11 @@ public class ManualLispParser {
         }
     }
 
+    /*
+    list     : PAR_ABRE elements PAR_FECHA
+         | PAR_ABRE PAR_FECHA
+         ;
+     */
     private void list() {
         consume(LispLexer.PAR_ABRE);
 
@@ -55,6 +62,11 @@ public class ManualLispParser {
         }
     }
 
+/*
+elements : sExpr elements
+         | sExpr
+         ;
+ */
     private void elements() {
         sExpr();
         while (canStartSExpr(peek())) {
@@ -62,6 +74,14 @@ public class ManualLispParser {
         }
     }
 
+    /*
+    atom     : NUMBER
+         | SYMBOL
+         | STRING
+         | BOOLEAN
+         ;
+
+     */
     private void atom() {
         MyToken current = peek();
         if (isAtom(current)) {
@@ -91,7 +111,7 @@ public class ManualLispParser {
         if (current != null && current.getType() == expectedType) {
             currentIndex++;
         }
-        // erro
+        // erro personalizado
         else {
             String found = (current != null) ? current.getText() : "EOF (fim da entrada)";
             int line = (current != null) ? current.getLine() : 0;
@@ -103,6 +123,7 @@ public class ManualLispParser {
         }
     }
 
+    //verifica se e algo tipo atom
     private boolean isAtom(MyToken t) {
         if (t == null) return false;
         int type = t.getType();
@@ -112,6 +133,8 @@ public class ManualLispParser {
                 type == LispLexer.BOOLEAN;
     }
 
+
+    // se e atom ou (, pode comecar expressao, senao, retorna false
     private boolean canStartSExpr(MyToken t) {
         if (t == null) return false;
         int type = t.getType();

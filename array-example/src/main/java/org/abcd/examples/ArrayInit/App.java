@@ -40,6 +40,7 @@ public class App {
         CharStream input = CharStreams.fromString(entrada);
         LispLexer lexer = new LispLexer(input);
 
+        // erro personalizado
         lexer.removeErrorListeners();
         lexer.addErrorListener(new BaseErrorListener() {
             @Override
@@ -64,6 +65,8 @@ public class App {
             CharStream input = CharStreams.fromString(entrada);
             LispLexer lexer = new LispLexer(input);
 
+
+            // erro personalizado
             lexer.removeErrorListeners();
             lexer.addErrorListener(new BaseErrorListener() {
                 @Override
