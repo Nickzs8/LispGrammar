@@ -1,4 +1,4 @@
-// Generated from /media/nickzs/D/Repositorios/SimpleAntlrMavenProject/array-example/src/main/antlr4/Lisp.g4 by ANTLR 4.13.2
+// Generated from /media/nickzs/D/Repositorios/LIspGrammar/array-example/src/main/antlr4/org/abcd/examples/ArrayInit/Lisp.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

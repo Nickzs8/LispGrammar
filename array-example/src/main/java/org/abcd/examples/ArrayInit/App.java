@@ -27,7 +27,7 @@ public class App {
         testarSintaxeInvalida("(+ 1 @2)");          // caractere/token inválido
 
         System.out.println("\n Visualização da Árvore");
-        tree.mostrarArvore("(\"Hello World!\")");
+        tree.mostrarArvore("\"Hello World!\"");
     }
 
     private static void testarLexico(String entrada) {
@@ -42,10 +42,10 @@ public class App {
     }
 
     private static void testarSintaxeValida(String entrada) {
-        ParseTree tree = parsear(entrada, false);
-        if (tree != null) {
+        ResultadoParse resultado = parsear(entrada, false);
+        if (resultado != null) {
             System.out.println("OK  -> " + entrada);
-            System.out.println("     Árvore: " + tree.toStringTree());
+            System.out.println("     Árvore: " + resultado.tree.toStringTree(resultado.parser));
         }
     }
 
@@ -54,7 +54,17 @@ public class App {
         parsear(entrada, true);
     }
 
-    private static ParseTree parsear(String entrada, boolean esperaErro) {
+    private static class ResultadoParse {
+        final ParseTree tree;
+        final LispParser parser;
+
+        ResultadoParse(ParseTree tree, LispParser parser) {
+            this.tree = tree;
+            this.parser = parser;
+        }
+    }
+
+    private static ResultadoParse parsear(String entrada, boolean esperaErro) {
         final int[] erros = {0};
 
         CharStream input = CharStreams.fromString(entrada);
@@ -98,8 +108,7 @@ public class App {
             if (esperaErro) {
                 System.out.println("  ATENÇÃO: entrada foi aceita mas deveria ter falhado!");
             }
-            return tree;
+            return new ResultadoParse(tree, parser);
         }
     }
-
 }

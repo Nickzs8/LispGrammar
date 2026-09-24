@@ -1,4 +1,4 @@
-// Generated from /media/nickzs/D/Repositorios/SimpleAntlrMavenProject/array-example/src/main/antlr4/Lisp.g4 by ANTLR 4.13.2
+// Generated from /media/nickzs/D/Repositorios/LIspGrammar/array-example/src/main/antlr4/org/abcd/examples/ArrayInit/Lisp.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -9,6 +9,12 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * operations with no return type.
  */
 public interface LispVisitor<T> extends ParseTreeVisitor<T> {
+	/**
+	 * Visit a parse tree produced by {@link LispParser#start}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStart(LispParser.StartContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LispParser#sExpr}.
 	 * @param ctx the parse tree

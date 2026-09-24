@@ -1,4 +1,4 @@
-// Generated from /media/nickzs/D/Repositorios/SimpleAntlrMavenProject/array-example/src/main/antlr4/Lisp.g4 by ANTLR 4.13.2
+// Generated from /media/nickzs/D/Repositorios/LIspGrammar/array-example/src/main/antlr4/org/abcd/examples/ArrayInit/Lisp.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -6,6 +6,16 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * {@link LispParser}.
  */
 public interface LispListener extends ParseTreeListener {
+	/**
+	 * Enter a parse tree produced by {@link LispParser#start}.
+	 * @param ctx the parse tree
+	 */
+	void enterStart(LispParser.StartContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LispParser#start}.
+	 * @param ctx the parse tree
+	 */
+	void exitStart(LispParser.StartContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LispParser#sExpr}.
 	 * @param ctx the parse tree
