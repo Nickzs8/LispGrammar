@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/LispCompiler.iml" filepath="$PROJECT_DIR$/.idea/LispCompiler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/array-example/array-example.iml" filepath="$PROJECT_DIR$/array-example/array-example.iml" />
     </modules>
   </component>
 </project>

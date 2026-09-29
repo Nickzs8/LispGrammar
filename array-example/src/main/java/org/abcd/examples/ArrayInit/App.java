@@ -60,11 +60,11 @@ public class App {
 
     private static void testarProcessamento(String entrada) {
         System.out.println("Entrada: " + entrada);
+        final int[] errosLexicos = {0};
 
         try {
             CharStream input = CharStreams.fromString(entrada);
             LispLexer lexer = new LispLexer(input);
-
 
             // erro personalizado
             lexer.removeErrorListeners();
@@ -74,20 +74,22 @@ public class App {
                                         int line, int charPositionInLine,
                                         String msg, RecognitionException e) {
                     System.out.println("  ERRO LÉXICO (linha " + line + ", coluna " + charPositionInLine + "): " + msg);
+                    errosLexicos[0]++;
                 }
             });
-
             // recolhe os tokens
             List<? extends Token> tokens = lexer.getAllTokens();
 
-            // executa o parser
-            ManualLispParser parser = new ManualLispParser(tokens);
-            parser.parse();
-
+            // só executa o parser se não houve erro léxico
+            if (errosLexicos[0] > 0) {
+                System.out.println("  -> Análise sintática abortada devido a erro léxico.");
+            } else {
+                ManualLispParser parser = new ManualLispParser(tokens);
+                parser.parse();
+            }
         } catch (Exception e) {
             System.out.println("  -> " + e.getMessage());
         }
-
         System.out.println("--------------------------------------------------");
     }
 }

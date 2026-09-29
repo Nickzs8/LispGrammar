@@ -113,6 +113,7 @@ elements : sExpr elements
         }
         // erro personalizado
         else {
+            nomeEsperado = LispLexer.VOCABULARY.getSymbolicName(expectedType);
             String found = (current != null) ? current.getText() : "EOF (fim da entrada)";
             int line = (current != null) ? current.getLine() : 0;
             int col = (current != null) ? current.getCharPositionInLine() : 0;
